@@ -9,6 +9,15 @@
       $_SESSION['message'] = $_POST['message'];
       $mode = 'confirm';
   } else if( isset($_POST['send']) && $_POST['send'] ){
+    // 送信ボタンを押したとき
+    $message = "お問い合わせを受け付けました \r\n"
+              . "名前: " . $_SESSION['fullname'] . "\r\n"
+              . "email: " . $_SESSION['email'] . "\r\n"
+              . "お問い合わせ内容:\r\n"
+              . preg_replace("/\r\n|\r|\n/", "\r\n", $_SESSION['message']);
+    mail($_SESSION['email'],'お問い合わせありがとうございます',$message);
+    mail('on87.iwasaki.tatsuhiro@gmail.com','お問い合わせありがとうどざいます',$message);
+    $_SESSION = array();
     $mode = 'send';
   } else {
     $_SESSION['fullname'] = "";
@@ -43,7 +52,6 @@
       <input type="submit" name="send" value="送信" />
     </form>
   <?php } else { ?>
-    <!-- 完了画面 -->
   <?php } ?>
 </body>
 </html>
