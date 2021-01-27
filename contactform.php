@@ -52,6 +52,8 @@
       <input type="submit" name="send" value="送信" />
     </form>
   <?php } else { ?>
+      <!-- 完了画面 -->
+      送信しました。お問い合わせありがとうございます。<br>
   <?php } ?>
 </body>
 </html>
