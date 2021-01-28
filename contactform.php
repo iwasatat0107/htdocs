@@ -32,10 +32,21 @@
 	  if( $errmessage ){
 	    $mode = 'input';
     } else {
+      $token = bin2hex(random_bytes(32));
+      $_SESSION['token'] = $token;
 	    $mode = 'confirm';
     }
   } else if( isset($_POST['send']) && $_POST['send'] ){
     // 送信ボタンを押したとき
+      if( !$_POST['token'] || !$_SESSION['token'] || !$_SESSION['email'] ){
+      $errmessage[] = '不正な処理が行われました';
+      $_SESSION     = array();
+      $mode         = 'input';
+    } else if( $_POST['token'] != $_SESSION['token'] ){
+      $errmessage[] = '不正な処理が行われました';
+      $_SESSION     = array();
+      $mode         = 'input';
+    } else {
     $message  = "お問い合わせを受け付けました \r\n"
               . "名前: " . $_SESSION['fullname'] . "\r\n"
               . "email: " . $_SESSION['email'] . "\r\n"
@@ -45,6 +56,7 @@
     mail('iwasatat.php@gmail.com','お問い合わせありがとうございます',$message);
     $_SESSION = array();
     $mode = 'send';
+    }
   } else {
     $_SESSION['fullname'] = "";
     $_SESSION['email']    = "";
@@ -90,6 +102,7 @@
   <?php } else if( $mode == 'confirm' ){ ?>
     <!-- 確認画面 -->
     <form action="./contactform.php" method="post">
+      <input type="hidden" name="token" value= "<?php echo $_SESSION['token']; ?>">
       名前    <?php echo $_SESSION['fullname'] ?><br>
       Eメール <?php echo $_SESSION['email'] ?><br>
       お問い合わせ内容<br>
