@@ -56,23 +56,36 @@
 <head>
 	<meta charset="utf-8">
 	<title>お問い合わせフォーム</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+  <style>
+    body{
+      padding: 10px;
+      max-width: 600px;
+      margin: 0px auto;
+    }
+    div.button{
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
   <?php if( $mode == 'input' ){ ?>
     <!-- 入力画面 -->
     <?php
       if( $errmessage ){
-        echo '<div style="color:red;">';
+        echo '<div class="alert alert-danger" role="alert">';
         echo implode('<br>', $errmessage );
         echo '</div>';
       }
     ?>
     <form action="./contactform.php" method="post">
-      名前    <input type="text"    name="fullname" value="<?php echo $_SESSION['fullname'] ?>"><br>
-      Eメール <input type="email"   name="email"    value="<?php echo $_SESSION['email'] ?>"><br>
+      名前    <input type="text"    name="fullname" value="<?php echo $_SESSION['fullname'] ?>" class="form-control" ><br>
+      Eメール <input type="email"   name="email"    value="<?php echo $_SESSION['email'] ?>" class="form-control" ><br>
       お問い合わせ内容<br>
-      <textarea cols="40" rows="8" name="message"><?php echo $_SESSION['message'] ?></textarea><br>
-      <input type="submit" name="confirm" value="確認" />
+      <textarea cols="40" rows="8" name="message" class="form-control" ><?php echo $_SESSION['message'] ?></textarea><br>
+      <div class="button">
+        <input type="submit" name="confirm" value="確認" class="btn btn-primary btn-lg"/>
+      </div>
     </form>
   <?php } else if( $mode == 'confirm' ){ ?>
     <!-- 確認画面 -->
@@ -81,8 +94,8 @@
       Eメール <?php echo $_SESSION['email'] ?><br>
       お問い合わせ内容<br>
       <?php echo nl2br($_SESSION['message']) ?><br>
-      <input type="submit" name="back" value="戻る" />
-      <input type="submit" name="send" value="送信" />
+      <input type="submit" name="back" value="戻る" class="btn btn-primary"/>
+      <input type="submit" name="send" value="送信" class="btn btn-primary"/>
     </form>
   <?php } else { ?>
     <!-- 完了画面 -->
