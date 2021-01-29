@@ -1,4 +1,8 @@
 <?php
+  $kind   = array();
+  $kind[1]  = '質問';
+  $kind[2]  = 'ご意見';
+  $kind[3]  = '資料請求';
   session_start();
   $mode = 'input';
   $errmessage = array();
@@ -8,7 +12,7 @@
 	  // 確認画面
     if( !$_POST['fullname'] ) {
 	    $errmessage[] = "名前を入力してください";
-    } else if( mb_strlen($_POST['fullname']) > 100 ){
+    } else if( mb_strlen($_POST['fullname']) > 100 ){ 
 	    $errmessage[] = "名前は100文字以内にしてください";
     }
 	  $_SESSION['fullname']	= htmlspecialchars($_POST['fullname'], ENT_QUOTES);
@@ -20,7 +24,14 @@
     } else if( !filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) ){
 	    $errmessage[] = "メールアドレスが不正です";
 	  }
-	  $_SESSION['email']	= htmlspecialchars($_POST['email'], ENT_QUOTES);
+    $_SESSION['email']	= htmlspecialchars($_POST['email'], ENT_QUOTES);
+    
+    if( !$_POST['mkind'] ) {
+	    $errmessage[] = "種別を入力してください";
+    } else if( $_POST['mkind'] <= 0 || $_POST['mkind'] >= 4 ){
+	    $errmessage[] = "動作が不正です";
+    }
+	  $_SESSION['mkind']	= htmlspecialchars($_POST['mkind'], ENT_QUOTES);
 
 	  if( !$_POST['message'] ){
 		  $errmessage[] = "お問い合わせ内容を入力してください";
@@ -50,6 +61,7 @@
     $message  = "お問い合わせを受け付けました \r\n"
               . "名前: " . $_SESSION['fullname'] . "\r\n"
               . "email: " . $_SESSION['email'] . "\r\n"
+              . "種別: " . $kind[ $_SESSION['mkind'] ] . "\r\n"
               . "お問い合わせ内容:\r\n"
               . preg_replace("/\r\n|\r|\n/", "\r\n", $_SESSION['message']);
 	  mail($_SESSION['email'],'お問い合わせありがとうございます',$message);
@@ -60,6 +72,7 @@
   } else {
     $_SESSION['fullname'] = "";
     $_SESSION['email']    = "";
+    $_SESSION['mkind']  = "";
     $_SESSION['message']  = "";
   }
 ?>
@@ -93,6 +106,17 @@
     <form action="./contactform.php" method="post">
       名前    <input type="text"    name="fullname" value="<?php echo $_SESSION['fullname'] ?>" class="form-control" ><br>
       Eメール <input type="email"   name="email"    value="<?php echo $_SESSION['email'] ?>" class="form-control" ><br>
+      種別：
+      <select name="mkind" class="form-control">
+        <?php foreach( $kind as $i => $v ){ ?>
+          <?php if( $_SESSION['mkind'] == $i ) { ?>
+          <option value="<?php echo $i ?>" selected><?php echo $v ?></option>
+          <?php } else { ?>
+          <option value="<?php echo $i ?>"><?php echo $v ?></option>
+          <?php } ?>
+        <?php } ?>
+      </select><br>
+
       お問い合わせ内容<br>
       <textarea cols="40" rows="8" name="message" class="form-control" ><?php echo $_SESSION['message'] ?></textarea><br>
       <div class="button">
@@ -105,6 +129,7 @@
       <input type="hidden" name="token" value= "<?php echo $_SESSION['token']; ?>">
       名前    <?php echo $_SESSION['fullname'] ?><br>
       Eメール <?php echo $_SESSION['email'] ?><br>
+      種別    <?php echo $kind[ $_SESSION['mkind'] ] ?><br>
       お問い合わせ内容<br>
       <?php echo nl2br($_SESSION['message']) ?><br>
       <input type="submit" name="back" value="戻る" class="btn btn-primary"/>
