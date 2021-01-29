@@ -3,6 +3,10 @@
   $kind[1]  = '質問';
   $kind[2]  = 'ご意見';
   $kind[3]  = '資料請求';
+  $present  = array();
+  $present[1] = 'チロルチョコ';
+  $present[2] = 'うまい棒';
+  $present[3] = 'BMW';
   session_start();
   $mode = 'input';
   $errmessage = array();
@@ -33,6 +37,15 @@
     }
 	  $_SESSION['mkind']	= htmlspecialchars($_POST['mkind'], ENT_QUOTES);
 
+    if( !isset( $_POST['present']) || !$_POST['present'] ) {
+	    $errmessage[] = "プレゼントを選んでください";
+    } else if( $_POST['present'] <= 0 || $_POST['present'] >= 4 ){
+	    $errmessage[] = "プレゼントが不正です";
+    }
+    if( isset($_POST['present']) ){
+	  $_SESSION['mkind']	= htmlspecialchars($_POST['mkind'], ENT_QUOTES);
+    }
+
 	  if( !$_POST['message'] ){
 		  $errmessage[] = "お問い合わせ内容を入力してください";
 	  } else if( mb_strlen($_POST['message']) > 500 ){
@@ -62,6 +75,7 @@
               . "名前: " . $_SESSION['fullname'] . "\r\n"
               . "email: " . $_SESSION['email'] . "\r\n"
               . "種別: " . $kind[ $_SESSION['mkind'] ] . "\r\n"
+              . "プレゼント: " . $present[ $_SESSION['present'] ] . "\r\n"
               . "お問い合わせ内容:\r\n"
               . preg_replace("/\r\n|\r|\n/", "\r\n", $_SESSION['message']);
 	  mail($_SESSION['email'],'お問い合わせありがとうございます',$message);
@@ -72,7 +86,8 @@
   } else {
     $_SESSION['fullname'] = "";
     $_SESSION['email']    = "";
-    $_SESSION['mkind']  = "";
+    $_SESSION['mkind']    = "";
+    $_SESSION['present']  = "";
     $_SESSION['message']  = "";
   }
 ?>
@@ -116,7 +131,18 @@
           <?php } ?>
         <?php } ?>
       </select><br>
-
+      もれなく差し上げます<br>
+      <?php foreach( $present as $i => $v ){ ?>
+        <?php if( $_SESSION['present'] == $i ){ ?>
+        <label><input type="radio" name="present" value="<?php echo $i ?>"checked><?php echo $v ?></label><br>
+        <?php } else { ?>
+        <label><input type="radio" name="present" value="<?php echo $i ?>"><?php echo $v ?></label><br>
+        <?php } ?>
+      <?php } ?>
+  
+    
+    
+      
       お問い合わせ内容<br>
       <textarea cols="40" rows="8" name="message" class="form-control" ><?php echo $_SESSION['message'] ?></textarea><br>
       <div class="button">
@@ -130,6 +156,7 @@
       名前    <?php echo $_SESSION['fullname'] ?><br>
       Eメール <?php echo $_SESSION['email'] ?><br>
       種別    <?php echo $kind[ $_SESSION['mkind'] ] ?><br>
+      プレゼント    <?php echo $present[ $_SESSION['present'] ] ?><br>
       お問い合わせ内容<br>
       <?php echo nl2br($_SESSION['message']) ?><br>
       <input type="submit" name="back" value="戻る" class="btn btn-primary"/>
