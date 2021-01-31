@@ -43,7 +43,7 @@
 	    $errmessage[] = "プレゼントが不正です";
     }
     if( isset($_POST['present']) ){
-	  $_SESSION['mkind']	= htmlspecialchars($_POST['mkind'], ENT_QUOTES);
+	  $_SESSION['present']	= htmlspecialchars($_POST['present'], ENT_QUOTES);
     }
 
 	  if( !$_POST['message'] ){
