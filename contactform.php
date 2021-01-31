@@ -45,6 +45,30 @@
     if( isset($_POST['present']) ){
 	  $_SESSION['present']	= htmlspecialchars($_POST['present'], ENT_QUOTES);
     }
+    if( !isset($_POST['info1']) || mb_strlen(!$_POST['info1']) > 100 ) {
+      $errmessage[] = "メールマガジン情報1が不正です";
+    }
+    if( isset($_POST['info1']) ){
+      $_SESSION['info1']	= htmlspecialchars($_POST['info1'], ENT_QUOTES);
+      } else {
+        $_SESSION['info1'] = "";
+      }
+    if( !isset($_POST['info2']) || mb_strlen(!$_POST['info1']) > 100 ) {
+        $errmessage[] = "メールマガジン情報2が不正です";
+      }
+    if( isset($_POST['info2']) ){
+        $_SESSION['info2']	= htmlspecialchars($_POST['info2'], ENT_QUOTES);
+      } else {
+          $_SESSION['info2'] = "";
+      }
+    if( !isset($_POST['info3']) || mb_strlen(!$_POST['info3']) > 100 ) {
+        $errmessage[] = "メールマガジン情報3が不正です";
+      }
+    if( isset($_POST['info3']) ){
+        $_SESSION['info3']	= htmlspecialchars($_POST['info3'], ENT_QUOTES);
+      } else {
+          $_SESSION['info3'] = "";
+      }
 
 	  if( !$_POST['message'] ){
 		  $errmessage[] = "お問い合わせ内容を入力してください";
@@ -75,6 +99,10 @@
               . "名前: " . $_SESSION['fullname'] . "\r\n"
               . "email: " . $_SESSION['email'] . "\r\n"
               . "種別: " . $kind[ $_SESSION['mkind'] ] . "\r\n"
+              . "メールマガジン: \r\n"
+              . "□" . $_SESSION['info1']. "\r\n"
+              . "□" . $_SESSION['info2']. "\r\n"
+              . "□" . $_SESSION['info3']. "\r\n"
               . "プレゼント: " . $present[ $_SESSION['present'] ] . "\r\n"
               . "お問い合わせ内容:\r\n"
               . preg_replace("/\r\n|\r|\n/", "\r\n", $_SESSION['message']);
@@ -88,6 +116,9 @@
     $_SESSION['email']    = "";
     $_SESSION['mkind']    = "";
     $_SESSION['present']  = "";
+    $_SESSION['info1']    = "";
+    $_SESSION['info2']    = "";
+    $_SESSION['info3']    = "";
     $_SESSION['message']  = "";
   }
 ?>
@@ -139,10 +170,10 @@
         <label><input type="radio" name="present" value="<?php echo $i ?>"><?php echo $v ?></label><br>
         <?php } ?>
       <?php } ?>
-  
-    
-    
-      
+      メールマガジン登録<br>
+      <label><input type="checkbox" name="info1" value="お得な情報" checked>お得な情報</label><br>
+      <label><input type="checkbox" name="info2" value="新商品情報" checked>新商品情報</label><br>
+      <label><input type="checkbox" name="info3" value="クーポン情報" checked>クーポン情報</label><br>
       お問い合わせ内容<br>
       <textarea cols="40" rows="8" name="message" class="form-control" ><?php echo $_SESSION['message'] ?></textarea><br>
       <div class="button">
@@ -157,6 +188,10 @@
       Eメール <?php echo $_SESSION['email'] ?><br>
       種別    <?php echo $kind[ $_SESSION['mkind'] ] ?><br>
       プレゼント    <?php echo $present[ $_SESSION['present'] ] ?><br>
+      メールマガジン<br>
+      <?php echo $_SESSION['info1'] ?></br>
+      <?php echo $_SESSION['info2'] ?></br>
+      <?php echo $_SESSION['info3'] ?></br>
       お問い合わせ内容<br>
       <?php echo nl2br($_SESSION['message']) ?><br>
       <input type="submit" name="back" value="戻る" class="btn btn-primary"/>
